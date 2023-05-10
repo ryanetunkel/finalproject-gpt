@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D&D 5th Edition Spells by Level</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    canvas {
+      display: block;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spellChart"></canvas>
+
+  <script>
+    // Fetch spell data from Open5e API
+    fetch('https://api.open5e.com/spells/')
+      .then(response => response.json())
+      .then(data => {
+        // Count spells by level
+        const spellLevels = {
+          0: 0,
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+          6: 0,
+          7: 0,
+          8: 0,
+          9: 0
+        };
+
+        data.results.forEach(spell => {
+          spellLevels[spell.level]++;
+        });
+
+        // Create chart using Chart.js
+        const ctx = document.getElementById('spellChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(spellLevels),
+            datasets: [{
+              label: 'Spells by Level',
+              data: Object.values(spellLevels),
+              backgroundColor: 'rgba(54, 162, 235, 0.5)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                stepSize: 1
+              }
+            }
+          }
+        });
+      })
+      .catch(error => {
+        console.log('An error occurred:', error);
+      });
+  </script>
+</body>
+</html>
